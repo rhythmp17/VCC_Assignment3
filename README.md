@@ -1,5 +1,6 @@
 # **Assignment 3: Auto-Scaling Flask Application on GCP**
 
+Rhythm Patni (B22CS043)                                                       [Repository Link](https://github.com/rhythmp17/VCC_Assignment3) | [Demo Video Link](https://drive.google.com/file/d/12u_JmIhhv4X6bMN5mfezcROer9cF8dmh/view?usp=sharing)  
 ---
 
 ## **1\. Introduction**
@@ -19,17 +20,66 @@ The implementation involves the following steps:
 * **Flask Application Deployment**: Start a simple Flask web server on the GCP VM upon scaling.  
 * **Traffic Redirection**: Redirect traffic from the local VM to the newly created GCP instance.
 
-### **2.2 Bash Script Implementation**
+### **2.2 Steps to Implement**
 
-A Bash script (`monitor.sh`) automates the process, performing the following tasks:
+The following has to be done locally
 
-1. **Authenticate with GCP** using a service account.  
-2. **Monitor system resources** using the `top` and `free` commands.  
-3. **Trigger scaling** when resource usage crosses the defined threshold.  
-4. **Deploy a Flask application** on a newly created GCP instance.  
-5. **Fetch the external IP address** of the instance and display the new URL.
+1. Install VirtualBox or any VM application  
+2. Setup a local VM (We set up ubuntu)  
+3. Install htop to monitor system resources  
+4. Install flask to host app on local machine.
 
-## 
+The following has to be done on GCP 
+
+1. Create a Service Account.  
+2. Get JSON key  
+3. Grant Compute Admin Role and Service Account User Role
+
+### 
+
+### **2.3 Bash Script Implementation**
+
+This Bash script monitors system resource usage (CPU and memory) and automatically deploys a Flask web application on Google Cloud Platform (GCP) if the usage exceeds predefined thresholds. Here's how it works in detail:
+
+### **1\. Authentication with GCP**
+
+* The script sets up authentication using a service account key.  
+* It ensures that the script can interact with GCP services by activating the service account.  
+* If authentication fails, the script exits immediately.
+
+### **2\. Monitoring CPU and Memory Usage**
+
+* The script continuously monitors CPU and memory usage on the local machine.  
+* It calculates CPU usage by checking idle time and subtracting it from 100%.  
+* Memory usage is determined by comparing used memory to total memory.  
+* The resource usage is logged for tracking purposes.
+
+### **3\. Triggering Scaling Based on Thresholds**
+
+* If CPU or memory usage exceeds 75%, the script initiates scaling.  
+* It logs that resource limits have been exceeded and begins the process of deploying a new instance on GCP.
+
+### **4\. Deploying a Flask App on GCP**
+
+* The script creates a startup script that:  
+  * Updates system packages.  
+  * Installs Python and Flask.  
+  * Writes a simple Flask web application that responds with "Hello from GCP\!".  
+  * Starts the Flask app in the background.  
+* A new GCP virtual machine (VM) is launched with:  
+  * A specified instance name, zone, and machine type.  
+  * An Ubuntu 20.04 operating system.  
+  * HTTP and HTTPS traffic enabled.
+
+### **5\. Obtaining the GCP Instance's Public IP**
+
+* After deployment, the script waits briefly for the instance to start.  
+* It retrieves the external IP address of the instance.  
+* It logs and displays the public URL where the Flask app is running.
+
+### **6\. Continuous Monitoring**
+
+* The script runs in an infinite loop, checking resource usage every 10 seconds.
 
 ## **3\. Simulating Load on the System and Scaling it.**
 
